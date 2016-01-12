@@ -18,16 +18,16 @@ around _inline_get_value => sub {
     my ($orig, $self, $instance, @etc) = @_;
 
     my @code = $self->$orig($instance,@etc);
-    unless ($self->is_lazy) {
-        my $has_value = $self->_inline_instance_has($instance);
-        my $throw = q[die Module::Runtime::use_module("MooseX::DieUninit::Exception")->new(] .
-            'instance => '.$instance.', '.
-            'attribute_name => q{'.$self->name.'}, '.
+    return @code if $self->is_lazy;
+
+    my $has_value = $self->_inline_instance_has($instance);
+    my $throw = q[die Module::Runtime::use_module("MooseX::DieUninit::Exception")->new(] .
+        'instance => '.$instance.', '.
+        'attribute_name => q{'.$self->name.'}, '.
         ');';
 
-        unshift @code, qq[if (not $has_value) {$throw};]
-    }
-    return @code;
+    return qq[if (not $has_value) {$throw};],
+        @code;
 };
 
 1;

@@ -7,7 +7,7 @@ with 'Moose::Exception::Role::Instance',
 sub _build_message {
     my $self = shift;
     "Tried to access attribute "
-    . $self->attribute_name . " defore initializing it";
+    . $self->attribute_name . " before initializing it";
 }
 
 1;
